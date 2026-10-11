@@ -46,12 +46,11 @@ Then `/reload` or restart Pi. The config file at `~/.pi/agent/pi-blackhole/pi-bl
 
 ## ✨ What's new
 
-> **Latest release: [0.5.10](CHANGELOG.md)**
+> **Latest release: [0.5.12](CHANGELOG.md)**
 >
-> - **Memory workers that fail now fall back instead of silently skipping** — observer/reflector/dropper stream errors and turn-cap cutoffs throw into the model fallback chain, so a failed run no longer advances the cursor over work it never finished.
-> - **The turn cap only ends runs that did tool work** — a run that stops naturally on exactly its last allowed turn keeps its result instead of failing as cap-cut, and a capped session model is not retried on an identical budget.
-> - **`/blackhole` on an ineligible branch reports nothing-to-compact** — instead of Pi's error card plus a second failure toast when the branch already fits inside the keep-recent budget.
-> - **A cancelled `/blackhole` stays quiet, and the command loads the config first** — no second vaguer toast on cancel, and a `manual`-mode session flushes pending memory instead of reading defaults.
+> - **Pi 1.x is supported** — the declared peer range widens to `<2.0.0`, so Pi 1.0/1.1 installs no longer report an out-of-range peer.
+> - **Mid-run inline compaction keeps the turn open for RPC/SDK clients** — the compaction event no longer advertises itself as a user-initiated `/compact`, so `pi --mode rpc` frontends stop ending the run mid-turn ([#150](https://github.com/k0valik/pi-blackhole/issues/150)).
+> - **Toolchain refresh** — pnpm 12.10.0 and the dev-dependency group are current; runtime behavior is unchanged.
 >
 > See [`CHANGELOG.md`](CHANGELOG.md) for the full history.
 

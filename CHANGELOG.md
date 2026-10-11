@@ -11,6 +11,38 @@
 
 ### Fixed
 
+- **Observer turn-cap keeps partial work instead of cooling the model.** A capped run returns its recorded observations with a cited-prefix checkpoint; the stage commits that prefix, drains the rest in-run, and skips the model in-cycle only. Coverage never advances past a citation. A capped batch with no head-anchored prefix is halved and retried (converging to a single entry) instead of discarded, still with no cooldown.
+- **Resolve-time notices emit once per run with an end-of-run summary.** Per-stage dedupe (capped at five entries), headless-safe, and the checkpoint toast is no longer gated away.
+
+---
+
+## [0.5.12] - 2026-10-08
+
+### Changed
+
+- **Pi 1.x is supported.** The declared peer range for all four `@earendil-works/pi-*` packages widens from `>=0.85.1 <1.0.0` to `>=0.85.1 <2.0.0`, and the dev toolchain moves to `1.1.0`, so Pi 1.0/1.1 installs no longer report an out-of-range peer ([#151](https://github.com/k0valik/pi-blackhole/issues/151)). The extension-API test double picks up the required members Pi 1.1 added (`registerToolRenderer`, `getSettings`, the MCP registrations, and the virtual-model registrations).
+- **Toolchain: pnpm 12.10.0.** `packageManager` moves from 11.27.1 to 12.10.0; the lockfile now records pnpm's self-managed package-manager dependencies.
+- **Dev-dependency refresh.** The dev-dependencies group is bumped (lint-staged `17.6.0`, oxfmt `0.71.0`, oxlint `1.86.0`, vitest `5.0.3`) ([#145](https://github.com/k0valik/pi-blackhole/pull/145)).
+- Thinking-only worker models: observerModel/reflectorModel/dropperModel (and model) now accept { "thinking": "<level>" } without provider/id as a pure thinking-level modifier while the worker tracks the session model via sessionFallback (#153).
+
+### Fixed
+
+- **CI installs accept the freshly published Pi 1.1.0 set.** The `@earendil-works/pi-*` bump to `1.1.0` crossed pnpm's minimum-release-age gate, so `pnpm install --frozen-lockfile` failed in CI and the publish job; the 1.1.0 packages are now listed in `minimumReleaseAgeExclude`, matching the earlier `0.87.0` exemption ([#151](https://github.com/k0valik/pi-blackhole/issues/151)).
+- **Mid-run inline compaction no longer looks like a manual `/compact` to RPC/SDK clients.** Pi's `AgentSession.compact()` hardcodes `reason: "manual"` on `compaction_start`/`compaction_end` (and on compaction-source summarization retries), which RPC frontends read as "the user compacted between runs" — so during an inline compaction they closed the still-open turn and dropped every later event of the run. The adapter now rewrites the label to `"threshold"` for the duration of the inline attempt (a run is always open at an awaited `turn_end`), while a genuine `/compact`/`/blackhole` between runs stays `"manual"` ([#150](https://github.com/k0valik/pi-blackhole/issues/150)).
+
+---
+
+## [0.5.11] - 2026-10-05
+
+### Added
+
+- **Oversized work shrinks to fit instead of stalling.** When no configured model can hold the sized input, the stage re-plans against the largest resolved window and runs that: the observer caps its chunk and drains the remainder in-run, the reflector splits new items into batches that all complete before the single cursor advance, and the dropper evaluates batches under pool-wide pressure and applies the ranker + cap once. A failed batch still voids its run with the cursor unmoved.
+- **A warning when `observeAfterTokens` exceeds `observerChunkMaxTokens`.** Every pass then necessarily runs as multiple capped + drained batches. The loader warns (never clamps); skipped when `memory` is off.
+
+### Fixed
+
+> > > > > > > origin/dev
+
 - **Observer coverage can no longer skip entries the model never saw.** The cap keeps the oldest contiguous prefix, coverage derives from the ids the serializer actually emitted, and after a recorded or clean-empty close the stage drains the remaining backlog in the same run — a delay, never a loss.
 - **Cut-off worker runs no longer count as finished.** `length`, `aborted`, an unexempt terminal `toolUse` — or any other non-`stop` reason — now fail instead of advancing coverage over work that never happened. A run that stopped on its own stays success even if the signal aborted in the settle window, a length cut on a capped turn still reports as the turn cap, and a throwing stream function surfaces as an ordinary worker error instead of hanging the run.
 - **Small-context models run instead of silently never running.** The fit check prices the measured prompt (content + summaries + static overhead + turn headroom, all CJK-aware) against window minus output allowance minus margin; the output allowance is capped at a quarter of the window, and a too-small window skips without an hour-long cooldown. The stage dispatches that same allowance as the workers' generation cap, so a fitting prompt cannot overflow at generation time.

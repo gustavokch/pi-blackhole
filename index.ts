@@ -43,8 +43,18 @@ export default async (pi: ExtensionAPI) => {
   const PROVIDER_STREAMS_KEY = Symbol.for("pi-blackhole:provider-streams");
   const providerStreams: Map<string, Function> = ((globalThis as any)[PROVIDER_STREAMS_KEY] ??=
     new Map());
+  const omRuntime = new Runtime();
+  // Carry the startup probe result into the runtime so triggers can explain an
+  // unsupported host instead of silently falling back every run.
+  omRuntime.inlineCompactionAdapterStatus = inlineCompactionAdapterStatus;
+
   pi.on("agent_start", (_event: unknown, ctx: any) => {
     captureRegisteredProviderStreams(ctx.modelRegistry, providerStreams);
+    // Reset the per-run notice collection before the run's first consolidation
+    // launch. This handler is registered before both triggers below, so the
+    // reset cannot clear notices a launch just emitted — a reset placed in a
+    // later agent_start handler would depend on registration order.
+    omRuntime.resetNoticeGate();
   });
 
   scaffoldSettings();
@@ -80,11 +90,6 @@ export default async (pi: ExtensionAPI) => {
       }
     })();
   });
-
-  const omRuntime = new Runtime();
-  // Carry the startup probe result into the runtime so triggers can explain an
-  // unsupported host instead of silently falling back every run.
-  omRuntime.inlineCompactionAdapterStatus = inlineCompactionAdapterStatus;
 
   // Observational memory: background consolidation pipeline
   registerConsolidationTrigger(pi, omRuntime); // agent_start + turn_end → observer/reflector/dropper
