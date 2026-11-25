@@ -355,7 +355,7 @@ const lineSnippet = (text: string, regex: RegExp, contextLines = 2): string | un
 };
 
 /** Build full searchable text for a message, optionally filtered by mode. */
-const RECALL_TOOL_NAME = "recall";
+const RECALL_TOOL_NAME = "vcc_recall";
 const TOOL_ARGS_BUDGET = 2000;
 
 const searchableToolCallArgs = (content: Message["content"]): string => {

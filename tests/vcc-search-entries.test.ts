@@ -402,14 +402,14 @@ describe("searchEntries", () => {
           {
             type: "toolCall",
             id: "tc-recall",
-            name: "recall",
+            name: "vcc_recall",
             arguments: { query: "secret-marker" },
           },
         ],
       } as any,
       {
         role: "toolResult",
-        toolName: "recall",
+        toolName: "vcc_recall",
         content: "secret-marker",
       } as any,
     ];

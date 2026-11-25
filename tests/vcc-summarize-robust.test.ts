@@ -309,7 +309,7 @@ describe("vcc-summarize robust merging and stripping", () => {
 
     it("strips basic recall-guidance footer when no memories present", () => {
       const footer =
-        "Use `recall` with an id to retrieve original context, or `#N:path` drill-down to explore file content from referenced entries.";
+        "Use `vcc_recall` with an id to retrieve original context, or `#N:path` drill-down to explore file content from referenced entries.";
       const prev = ["[Session Goal]", "- My goal", "---", "[user]", "hi", "---", footer].join(
         "\n\n",
       );
@@ -370,7 +370,7 @@ describe("vcc-summarize robust merging and stripping", () => {
   describe("stripRecallNote robustness", () => {
     it("strips modern RECALL_NOTE with separator", () => {
       const note =
-        "Details not captured here — exact code, error messages, file paths — are only recoverable via `recall`.";
+        "Details not captured here — exact code, error messages, file paths — are only recoverable via `vcc_recall`.";
       const prev = "[Session Goal]\n- Goal\n\n---\n\n[user]\nhi\n\n---\n\n" + note;
       const r = compile({ messages: [userMsg("next")], previousSummary: prev });
       expect(r).toContain(note);
@@ -378,7 +378,7 @@ describe("vcc-summarize robust merging and stripping", () => {
 
     it("strips bare RECALL_NOTE without separator", () => {
       const note =
-        "Details not captured here — exact code, error messages, file paths — are only recoverable via `recall`.";
+        "Details not captured here — exact code, error messages, file paths — are only recoverable via `vcc_recall`.";
       const prev = "[Session Goal]\n- Goal\n\n---\n\n[user]\nhi\n" + note;
       const r = compile({ messages: [userMsg("next")], previousSummary: prev });
       expect(r).toContain(note);

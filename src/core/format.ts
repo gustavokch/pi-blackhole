@@ -50,8 +50,8 @@ export const capBrief = (text: string): string => {
 
 export const RECALL_NOTE =
   "The conversation before this point has been compacted into the summary above. " +
-  "Details not captured here — exact code, error messages, file paths — are only recoverable via `recall`. " +
-  "Use `recall` to search the session history. Do not redo work already completed.";
+  "Details not captured here — exact code, error messages, file paths — are only recoverable via `vcc_recall`. " +
+  "Use `vcc_recall` to search the session history. Do not redo work already completed.";
 
 export const formatSummary = (data: SectionData): string => {
   const headerParts = [

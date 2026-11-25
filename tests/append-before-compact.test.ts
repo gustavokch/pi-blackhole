@@ -139,7 +139,7 @@ describe("append before-compact integration", () => {
       omissions: [
         {
           entryId: "t-old",
-          marker: "[Tool output text omitted from active context; recall #4.]",
+          marker: "[Tool output text omitted from active context; vcc_recall #4.]",
         },
       ],
     });
@@ -207,7 +207,7 @@ describe("append before-compact integration", () => {
     expect(second.compaction.details.retainedToolOutputProjection.omissions).toEqual([
       {
         entryId: "t-old",
-        marker: "[Tool output text omitted from active context; recall #4.]",
+        marker: "[Tool output text omitted from active context; vcc_recall #4.]",
       },
     ]);
     expect(oldOutput.message.content).toBe("o".repeat(8));

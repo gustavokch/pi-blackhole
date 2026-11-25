@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Changed
+
+- **The session-history `recall` tool is renamed `vcc_recall`.** The name collided with omp's built-in `recall` memory tool, and omp's renderer for that tool labeled blackhole results "no matches". Prompts, compaction markers and the self-search exclusion now use `vcc_recall`; `/blackhole-recall` is unchanged. Summaries written before the rename keep their `recall` footer and `recall #N` markers, which the new code does not match.
+
 ### Fixed
 
 - **Observational memory works on omp.** omp's pi-ai shim exports `createInitialSystemMessage`, so the observer, reflector and dropper sent their system prompt as a leading `system` message and passed their tool schemas through the host's `toToolDeclaration`. omp's typebox replacement builds callable schemas that serialize to `undefined`, so every worker run failed with `JSON Parse error: Unexpected identifier "undefined"`, and omp's agent loop has no `system` message role. Workers now use the `systemPrompt` carrier when their tool schemas are callable.

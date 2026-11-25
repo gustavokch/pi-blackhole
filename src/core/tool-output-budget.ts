@@ -31,7 +31,7 @@ const outputText = (message: any): string => {
 };
 
 const omissionMarker = (recallIndex?: number): string =>
-  `[Tool output text omitted from active context; ${recallIndex === undefined ? "use recall" : `recall #${recallIndex}`}.]`;
+  `[Tool output text omitted from active context; ${recallIndex === undefined ? "use vcc_recall" : `vcc_recall #${recallIndex}`}.]`;
 
 export const omitToolOutputText = (message: any, marker: string): any => {
   if (message.role === "bashExecution") return { ...message, output: marker };

@@ -104,7 +104,7 @@ describe("renderSummary", () => {
   it("returns basic recall footer when both lists are empty", async () => {
     const { renderSummary } = await import("../src/om/ledger/render-summary.js");
     const result = renderSummary([], []);
-    expect(result).toContain("Use `recall` with an id");
+    expect(result).toContain("Use `vcc_recall` with an id");
     expect(result).toContain("most recent entry");
     expect(result).not.toContain("## Reflections");
     expect(result).not.toContain("## Observations");

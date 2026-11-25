@@ -10,10 +10,10 @@ import { estimateStringTokens } from "../tokens.js";
 
 const OM_INSTRUCTIONS_FULL = `Bracketed ids in reflections and observations connect to their source session entries. These are condensed memories from earlier in this session.
 When entries conflict, the most recent observation reflects the latest known state.
-Use \`recall\` with an id to retrieve original context, or \`#N:path\` drill-down to explore file content from referenced entries.
-When exact source context is needed for precision or traceability, use the \`recall\` tool with the relevant observation or reflection id. This is especially useful when a reflection materially affects a decision or is too compressed to continue confidently.`;
+Use \`vcc_recall\` with an id to retrieve original context, or \`#N:path\` drill-down to explore file content from referenced entries.
+When exact source context is needed for precision or traceability, use the \`vcc_recall\` tool with the relevant observation or reflection id. This is especially useful when a reflection materially affects a decision or is too compressed to continue confidently.`;
 
-const OM_INSTRUCTIONS_BASIC = `Use \`recall\` with an id to retrieve original context, or \`#N:path\` drill-down to explore file content from referenced entries.
+const OM_INSTRUCTIONS_BASIC = `Use \`vcc_recall\` with an id to retrieve original context, or \`#N:path\` drill-down to explore file content from referenced entries.
 When entries conflict, the most recent entry reflects the latest known state.`;
 
 export const OM_FOOTER_FULL = `----\n${OM_INSTRUCTIONS_FULL}\n----`;
@@ -247,7 +247,7 @@ export function priorityOverflowNote(overflow: Reflection[]): string | undefined
   return (
     `Priority memory notice: ${overflow.length} priority reflection${plural} (${ids}) ` +
     "did not fit the reflection pool budget. " +
-    "Use recall with an id if a needed user restriction is missing above."
+    "Use vcc_recall with an id if a needed user restriction is missing above."
   );
 }
 

@@ -258,7 +258,7 @@ Explicit fixed token threshold for auto-compaction. Optional — unset (or `0`) 
 
 Set to `0` to disable the budget entirely (opt-out). By default a 20000-token budget is applied.
 
-Dedicated token budget for historical `toolResult` text and shell output retained by a Blackhole compaction. At the compaction boundary, Blackhole scans the retained tail newest-first, retaining each full text output while it fits. The text crossing the budget and all older text outputs are represented by compact markers that point to `recall #N` when a stable transcript index is available. That representation is persisted with the compaction and stays unchanged during ordinary provider calls until the next Blackhole compaction. Non-text parts such as images are preserved and do not count against this budget.
+Dedicated token budget for historical `toolResult` text and shell output retained by a Blackhole compaction. At the compaction boundary, Blackhole scans the retained tail newest-first, retaining each full text output while it fits. The text crossing the budget and all older text outputs are represented by compact markers that point to `vcc_recall #N` when a stable transcript index is available. That representation is persisted with the compaction and stays unchanged during ordinary provider calls until the next Blackhole compaction. Non-text parts such as images are preserved and do not count against this budget.
 
 This only changes the retained context sent to the provider. Session JSONL, compaction summaries' source messages, and recall data remain full fidelity. Trailing results that have not yet been consumed by an assistant response are protected even when they exceed the budget; they can become eligible when a later compaction constructs a new retained representation.
 
@@ -270,7 +270,7 @@ This only changes the retained context sent to the provider. Session JSONL, comp
 
 Set to `0` to disable the budget entirely (opt-out). Default 48000 characters (~12k tokens).
 
-Bounding cap on any single `recall` tool / `/blackhole-recall` response. A huge stored message (long tool-result line, big expanded entry, giant observation body) must never flood the agent's context. Per-entry and per-line allocations are derived internally from this one knob:
+Bounding cap on any single `vcc_recall` tool / `/blackhole-recall` response. A huge stored message (long tool-result line, big expanded entry, giant observation body) must never flood the agent's context. Per-entry and per-line allocations are derived internally from this one knob:
 
 - Search snippet lines capped (~1000 chars) with the match kept visible.
 - Expanded entries share the budget, each with a continuation marker to `#N:text:full` / `#N:path:full`.
@@ -486,7 +486,7 @@ Stored observation-token pressure threshold for full-fold maintenance, plus a ha
 
 ### `reflectionsPoolMaxTokens`
 
-Hard cap on estimated rendered reflection lines in compaction output. Selection is tiered before recency: reflections carrying a critical/high `relevance` marker, else a live critical/high supporting observation, form a priority tier that claims at most half the pool first (critical before high, newest-first within a tier); ordinary reflections fill the rest newest-first, and any leftover budget spills back to priority so the pool is never wasted. Whole records only, output restored to source order. Live support means present in the same projection — superseded, dropped or out-of-boundary support never promotes a reflection. Priority reflections that still cannot fit the whole pool are reported in a `before_compact.reflection_priority_overflow` debug event and a one-line notice in the compaction output instead of being silently evicted. IDs and newline separators count. Non-negative finite integer; `0` disables the cap. Invalid file values use the default. This does not limit worker prompts or raw/view lookups (observer and reflector preambles keep plain newest-first selection), and omitted source records remain available through `recall`.
+Hard cap on estimated rendered reflection lines in compaction output. Selection is tiered before recency: reflections carrying a critical/high `relevance` marker, else a live critical/high supporting observation, form a priority tier that claims at most half the pool first (critical before high, newest-first within a tier); ordinary reflections fill the rest newest-first, and any leftover budget spills back to priority so the pool is never wasted. Whole records only, output restored to source order. Live support means present in the same projection — superseded, dropped or out-of-boundary support never promotes a reflection. Priority reflections that still cannot fit the whole pool are reported in a `before_compact.reflection_priority_overflow` debug event and a one-line notice in the compaction output instead of being silently evicted. IDs and newline separators count. Non-negative finite integer; `0` disables the cap. Invalid file values use the default. This does not limit worker prompts or raw/view lookups (observer and reflector preambles keep plain newest-first selection), and omitted source records remain available through `vcc_recall`.
 
 | Type | Default |
 |------|---------|

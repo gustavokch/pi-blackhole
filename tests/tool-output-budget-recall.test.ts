@@ -90,7 +90,7 @@ describe("tool-output budget recovery", () => {
       ).messages;
       const marker = masked.find((message: any) => message.toolCallId === "call-1").content[0]
         .text as string;
-      const recallQuery = marker.match(/recall (#\d+)/)?.[1];
+      const recallQuery = marker.match(/vcc_recall (#\d+)/)?.[1];
       expect(recallQuery).toBe("#1");
       expect(marker).not.toContain(fullOutput);
 

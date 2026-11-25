@@ -904,7 +904,7 @@ describe("reflection annotation contract", () => {
       prompt: REFLECTOR_SYSTEM,
       schema: JSON.stringify(RecordReflectionsSchema),
       render:
-        "## Reflections\n[bbbbbbbbbbbb] tests pass\n\n----\nBracketed ids in reflections and observations connect to their source session entries. These are condensed memories from earlier in this session.\nWhen entries conflict, the most recent observation reflects the latest known state.\nUse `recall` with an id to retrieve original context, or `#N:path` drill-down to explore file content from referenced entries.\nWhen exact source context is needed for precision or traceability, use the `recall` tool with the relevant observation or reflection id. This is especially useful when a reflection materially affects a decision or is too compressed to continue confidently.\n----",
+        "## Reflections\n[bbbbbbbbbbbb] tests pass\n\n----\nBracketed ids in reflections and observations connect to their source session entries. These are condensed memories from earlier in this session.\nWhen entries conflict, the most recent observation reflects the latest known state.\nUse `vcc_recall` with an id to retrieve original context, or `#N:path` drill-down to explore file content from referenced entries.\nWhen exact source context is needed for precision or traceability, use the `vcc_recall` tool with the relevant observation or reflection id. This is especially useful when a reflection materially affects a decision or is too compressed to continue confidently.\n----",
     });
   });
 });

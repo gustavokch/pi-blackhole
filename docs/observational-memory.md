@@ -393,7 +393,7 @@ Bracketed ids connect to source session entries...
 ----
 ```
 
-When no observations or reflections exist, only a short recall-guidance footer is appended. The footer instructs the agent on how to use `recall` with IDs and `#N:path` drill-down.
+When no observations or reflections exist, only a short recall-guidance footer is appended. The footer instructs the agent on how to use `vcc_recall` with IDs and `#N:path` drill-down.
 
 ## Graceful degradation
 
@@ -469,7 +469,7 @@ shutdown model call and does not make export observe missing raw messages.
 
 `observeOnShutdown` is opt-in (default `false`, env `PI_BLACKHOLE_OBSERVE_ON_SHUTDOWN`). On quit, new, resume or fork of a persisted session, it waits for in-flight consolidation then makes at most one observer request for an unobserved tail of at least 200 raw tokens. The shared deadline is 20 seconds, including the wait, and the observer gets one turn. The flush launches no request retry, reflector, dropper or multi-chunk drain; previously running consolidation may finish within the shared deadline. The normal observer resolver supplies the model; observations and cursors use normal branch or manual-mode pending storage. If the host session is closed before the flush completes, nothing is written for it (no observation, pending batch or cursor): the tail stays unobserved until a later session observes it. Errors and timeout are debug-logged, and disposal always runs.
 
-Reload, non-persisted sessions, memory-off, skipped providers, legacy passive mode and retry gates skip this work. Forced termination and SDK hosts calling `AgentSession.dispose()` without emitting shutdown are not covered. Persisted child CLI sessions can incur the same exit delay. A capped chunk or partial checkpoint may leave a remainder. Export/project recall can use recorded tail observations, subject to their viability filters. With the setting off, a below-threshold tail remains raw history: `recall` and resumed observation can still see it, but export and project recall cannot until it is observed.
+Reload, non-persisted sessions, memory-off, skipped providers, legacy passive mode and retry gates skip this work. Forced termination and SDK hosts calling `AgentSession.dispose()` without emitting shutdown are not covered. Persisted child CLI sessions can incur the same exit delay. A capped chunk or partial checkpoint may leave a remainder. Export/project recall can use recorded tail observations, subject to their viability filters. With the setting off, a below-threshold tail remains raw history: `vcc_recall` and resumed observation can still see it, but export and project recall cannot until it is observed.
 
 Host limit: the locally inspected `pi-subagents` SDK host emits child shutdown events but disposes after a 3-second host deadline. Its persisted children therefore have no guarantee of completing this 20-second flush; in-memory children are skipped.
 

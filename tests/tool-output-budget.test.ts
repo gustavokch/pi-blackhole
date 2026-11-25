@@ -52,7 +52,7 @@ describe("applyToolOutputBudget", () => {
     const messages = entries.map((entry) => structuredClone(entry.message));
     const projected = applyRetainedToolOutputProjection(messages, entries, projection);
 
-    expect(projected[0].content[0].text).toContain("recall #0");
+    expect(projected[0].content[0].text).toContain("vcc_recall #0");
     expect(projected[0].content[1]).toEqual(image);
     expect(projected[2]).toEqual(messages[2]);
     expect(projected[4]).toEqual(messages[4]);
@@ -119,7 +119,7 @@ describe("applyToolOutputBudget", () => {
     const projection = buildRetainedToolOutputProjection(retained, [], 1);
 
     expect(projection.omissions[0]?.marker).toBe(
-      "[Tool output text omitted from active context; use recall.]",
+      "[Tool output text omitted from active context; use vcc_recall.]",
     );
   });
 
@@ -197,7 +197,7 @@ describe("applyToolOutputBudget", () => {
 
     const result = applyToolOutputBudget(messages, 1, new Map([[0, 4]]));
 
-    expect(result.messages[0].content[0].text).toContain("recall #4");
+    expect(result.messages[0].content[0].text).toContain("vcc_recall #4");
     expect(result.messages[0].content[1]).toBe(image);
     expect(messages[0].content[0].text).toBe("xxxxxxxx");
   });

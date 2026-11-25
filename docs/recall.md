@@ -1,10 +1,10 @@
 # Recall System
 
-The recall system provides searchable session history after compaction. Pi's default compaction discards old messages; blackhole preserves them through a unified `recall` tool and `/blackhole-recall` command.
+The recall system provides searchable session history after compaction. Pi's default compaction discards old messages; blackhole preserves them through a unified `vcc_recall` tool and `/blackhole-recall` command.
 
-## recall tool
+## vcc_recall tool
 
-The agent gets a unified `recall` tool registered via [[src/tools/recall.ts]]. It handles five input types:
+The agent gets a unified `vcc_recall` tool registered via [[src/tools/recall.ts]]. It handles five input types:
 
 ### Entry expansion (#N)
 
@@ -97,7 +97,7 @@ OM integration is wrapped in try/catch — branch may not be available in all co
 
 ## /blackhole-recall command
 
-User-facing command for interactive session history search. Defined in [[src/commands/vcc-recall.ts]]. Same engine as the `recall` tool.
+User-facing command for interactive session history search. Defined in [[src/commands/vcc-recall.ts]]. Same engine as the `vcc_recall` tool.
 
 The command renders to the TUI for the human operator, so it is intentionally not covered by the `recallResponseMaxChars` total budget (per-entry snippet/body clips still apply via the shared modules). Capping user-facing command output is a separate follow-up.
 

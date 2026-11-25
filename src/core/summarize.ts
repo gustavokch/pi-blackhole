@@ -519,7 +519,7 @@ export const stripOMContent = (text: string): string => {
 
   // Also detect the basic recall-guidance footer (no observation preamble)
   const basicFooterIdx = text.indexOf(
-    "Use `recall` with an id to retrieve original context, or `#N:path` drill-down",
+    "Use `vcc_recall` with an id to retrieve original context, or `#N:path` drill-down",
   );
 
   // Find the start of OM content: either the instructions preamble or the first section header

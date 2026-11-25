@@ -94,7 +94,7 @@ describe("compile", () => {
         "",
         "The conversation before this point has been compacted into the summary above.",
         "Details not captured here — exact code, error messages, file paths — are only",
-        "recoverable via `recall`. Use `recall` to search the session history. Do not",
+        "recoverable via `vcc_recall`. Use `vcc_recall` to search the session history. Do not",
         "redo work already completed.",
       ].join("\n");
 
@@ -122,7 +122,7 @@ describe("compile", () => {
         "",
         "The conversation before this point has been compacted into the summary above.",
         "Details not captured here — exact code, error messages, file paths — are only",
-        "recoverable via `recall`. Use `recall` to search the session history. Do not",
+        "recoverable via `vcc_recall`. Use `vcc_recall` to search the session history. Do not",
         "redo work already completed.",
         "",
         "## Reflections",

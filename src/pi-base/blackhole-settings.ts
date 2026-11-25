@@ -151,7 +151,7 @@ export const config = new ConfigManager<UnifiedConfig>({
       type: "number",
       label: "Retained tool outputs",
       description:
-        "Token budget for historical tool-output text; newest is retained first and older text remains available via recall",
+        "Token budget for historical tool-output text; newest is retained first and older text remains available via vcc_recall",
       value: cfg.retainedToolOutputMaxTokens,
       min: 1_000,
       max: 200_000,
@@ -277,7 +277,7 @@ export const config = new ConfigManager<UnifiedConfig>({
       type: "number",
       label: "Reflection output max",
       description:
-        "Max estimated rendered reflection-line tokens in compaction output. 0 disables the cap. Full source records remain available through recall.",
+        "Max estimated rendered reflection-line tokens in compaction output. 0 disables the cap. Full source records remain available through vcc_recall.",
       value: cfg.reflectionsPoolMaxTokens,
       min: 0,
       max: 200_000,

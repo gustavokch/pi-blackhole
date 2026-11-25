@@ -87,7 +87,7 @@ Blackhole also preserves confirmed answers from several common question-tool res
 | `/blackhole-memory`         | Memory pipeline status & token counters _(Same as `/blackhole-memory status`)_                                                                                                                                                                                  |
 | `/blackhole-memory view`    | Show visible observations and reflections (after compaction trimming), copied to clipboard                                                                                                                                                                      |
 | `/blackhole-memory full`    | Show **all** recorded memory (including dropped observations), copied to clipboard                                                                                                                                                                              |
-| `/blackhole-recall <query>` | Search session history. Supports `page:N`, `scope:all`, `mode:file\|touched`, regex _(Also available to the agent as the `recall` tool)_                                                                                                                        |
+| `/blackhole-recall <query>` | Search session history. Supports `page:N`, `scope:all`, `mode:file\|touched`, regex _(Also available to the agent as the `vcc_recall` tool)_                                                                                                                    |
 | `/blackhole-export`         | Export distilled project memory (observations/reflections across past sessions + pending buffers) to import-ready markdown _(Options: `out:<path>.md` `days:<N>` `mode:distilled\|timeline` — e.g. `days:7 mode:timeline` for the recent chronological stream)_ |
 
 All commands work regardless of `compaction` mode — only _when_ auto-compaction fires changes. See [Compaction modes](#compaction-modes) below.
@@ -97,9 +97,9 @@ All commands work regardless of `compaction` mode — only _when_ auto-compactio
 Headless runs for cron/systemd timers reuse the same argument grammar: `pi --no-session --blackhole-export "days:7 mode:timeline out:memory/weekly.md" -p` (run from the project root). The summary prints to stdout, parse/IO failures exit non-zero, and the snapshot semantics above apply unchanged. Pass `--no-session` to guarantee no session file is created (message-less probe runs persisted none, but session persistence is host behavior).
 
 <details>
-<summary>The `recall` tool (agent-facing)</summary>
+<summary>The `vcc_recall` tool (agent-facing)</summary>
 
-The agent gets one unified `recall` tool that handles every form of historical lookup. Searches read the raw session file directly, bypassing compaction.
+The agent gets one unified `vcc_recall` tool that handles every form of historical lookup. Searches read the raw session file directly, bypassing compaction.
 
 | Input           | What it does                                                                                                                                                                         |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -202,7 +202,7 @@ Full reference — every key, default, and env override — lives in:
 
 ## Demo
 
-`/blackhole` collapses ~143k tokens of conversation into a ~6.3k structured summary (YMMV based on your settings). `/blackhole-memory` shows pipeline status. `/blackhole-recall` searches history — the agent can do the same via its `recall` tool.
+`/blackhole` collapses ~143k tokens of conversation into a ~6.3k structured summary (YMMV based on your settings). `/blackhole-memory` shows pipeline status. `/blackhole-recall` searches history — the agent can do the same via its `vcc_recall` tool.
 
 https://github.com/user-attachments/assets/a7dd804d-6aca-4bdb-8b6e-0dd779363a43
 
@@ -271,8 +271,8 @@ Root cause is a missing token refresh...
 
 ---
 The conversation before this point has been compacted into the summary above.
-Details not captured here — exact code, error messages, file paths — are only recoverable via `recall`.
-Use `recall` to search the session history. Do not redo work already completed.
+Details not captured here — exact code, error messages, file paths — are only recoverable via `vcc_recall`.
+Use `vcc_recall` to search the session history. Do not redo work already completed.
 
 ## Reflections
 [c3d4e5f6a1b2] User is building Acme Dashboard on Next.js 15 with Supabase auth.
@@ -285,7 +285,7 @@ Use `recall` to search the session history. Do not redo work already completed.
 Bracketed ids in reflections and observations connect to their source session entries.
 These are condensed memories from earlier in this session.
 When entries conflict, the entry with the latest timestamp reflects the latest known state.
-Use `recall` with an id to retrieve original context.
+Use `vcc_recall` with an id to retrieve original context.
 ----
 ```
 
@@ -363,7 +363,7 @@ What blackhole adds and reworks on top:
 - **Custom provider bridge** — consolidation agents loaded via jiti can still use provider stream functions registered by other extensions.
 - **Per-cause cooldowns** — transient network/overload failures cool for minutes, quota/config failures for the configured hours, and content refusals skip only the current stage; fallbacks are tried automatically and the 30-second retry gate prevents spam.
 - **Improved observer/reflector/dropper prompts** — each heavily customized with detailed extraction rules, relevance guidance, and error handling.
-- **OM-recall coupling** — when expanding session entries via `recall`, related observations and reflections are automatically shown.
+- **OM-recall coupling** — when expanding session entries via `vcc_recall`, related observations and reflections are automatically shown.
 - **Thinking level support** — per-model `thinking` field for reasoning effort control, including `max` where supported by the provider.
 
 ## Reflection evidence time

@@ -58,7 +58,7 @@ export const clipExpandedEntry = (e: RenderedEntry, alloc: number): RenderedEntr
   const body = clip(e.summary, alloc);
   return {
     ...e,
-    summary: `${body}\n… [entry #${e.index} truncated — use recall #${e.index}:text:full for the full body, #${e.index}:path:full for tool file content]`,
+    summary: `${body}\n… [entry #${e.index} truncated — use vcc_recall #${e.index}:text:full for the full body, #${e.index}:path:full for tool file content]`,
   };
 };
 
@@ -420,7 +420,7 @@ export function registerRecallTool(
     omRuntime?.config?.recallResponseMaxChars ?? DEFAULT_RECALL_RESPONSE_MAX_CHARS;
 
   pi.registerTool({
-    name: "recall",
+    name: "vcc_recall",
     label: "Recall",
     description:
       "Search session history and earlier lines omitted, file write/edit content by text/regex. " +
@@ -429,8 +429,8 @@ export function registerRecallTool(
     promptSnippet:
       "Search session history + file write/edit content by text/regex. #N expand, #N:path / #N:text drill-down with optional :offset:limit or :full, mode:file/touched.",
     promptGuidelines: [
-      "Use recall — literal text/regex search across session history and file write/edit content. #N expands an entry; #N:path with optional :offset:limit or :full drills down into file content; #N:text pages a message body; 12-char hex ids recover observation/reflection sources. mode:file for file-content-only, mode:touched for aggregated files-by-path. scope:'all' to search the full session. If no results, try fewer terms or a regex pattern.",
-      "Use recall — when a drill-down path matches multiple files, options are listed. Narrow with a more specific path substring. Only full-file writes are indexed for text search (edit diffs are not).",
+      "Use vcc_recall — literal text/regex search across session history and file write/edit content. #N expands an entry; #N:path with optional :offset:limit or :full drills down into file content; #N:text pages a message body; 12-char hex ids recover observation/reflection sources. mode:file for file-content-only, mode:touched for aggregated files-by-path. scope:'all' to search the full session. If no results, try fewer terms or a regex pattern.",
+      "Use vcc_recall — when a drill-down path matches multiple files, options are listed. Narrow with a more specific path substring. Only full-file writes are indexed for text search (edit diffs are not).",
     ],
     parameters: Type.Object({
       query: Type.Optional(
