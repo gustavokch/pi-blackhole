@@ -57,4 +57,23 @@ describe("agent context carrier", () => {
     expect(leadingSystemPrompt(context)).toBe("SYSTEM PROMPT");
     expect("systemPrompt" in context).toBe(false);
   });
+
+  describe("on omp (callable tool schemas)", () => {
+    // omp's typebox replacement builds callable schemas exposing
+    // toJsonSchema(); real typebox builds plain objects.
+    const callableSchema = Object.assign((value: unknown) => value, {
+      toJsonSchema: () => ({ type: "object", properties: {} }),
+    });
+    const ompTool: AgentTool<any> = { ...tool, parameters: callableSchema };
+
+    it("carries the prompt on the systemPrompt field", () => {
+      const context = buildAgentContext("SYSTEM PROMPT", [ompTool]);
+      expect(context.systemPrompt).toBe("SYSTEM PROMPT");
+    });
+
+    it("sends no transcript system message", () => {
+      const context = buildAgentContext("SYSTEM PROMPT", [ompTool]);
+      expect(context.messages).toEqual([]);
+    });
+  });
 });

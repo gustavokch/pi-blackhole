@@ -8,7 +8,9 @@
  * Emitting the wrong carrier silently drops the system prompt, so the observer,
  * reflector, and dropper must not hardcode either one. The host's carrier is
  * probed by capability (`createInitialSystemMessage`, added in 0.87), never by
- * version, so this keeps working without an allowlist.
+ * version, so this keeps working without an allowlist. omp is the exception:
+ * it exports `createInitialSystemMessage` but reads `AgentContext.systemPrompt`
+ * (see `buildAgentContext`).
  *
  * See https://github.com/k0valik/pi-blackhole/issues/118.
  */
@@ -61,7 +63,13 @@ export function buildTranscriptAgentContext(
 
 /** Build the `AgentContext` the loaded host understands. */
 export function buildAgentContext(systemPrompt: string, tools: AgentTool<any>[]): AgentContext {
-  return supportsTranscriptSystemMessages()
+  // Callable tool schemas mark omp: its typebox replacement builds callable
+  // schemas where typebox builds plain objects. omp's pi-ai shim exports the
+  // 0.87 transcript helpers, but its agent loop has no `system` message role
+  // and reads `AgentContext.systemPrompt`; a leading system message fails the
+  // request there.
+  const isOmp = tools.some((tool) => typeof tool.parameters === "function");
+  return supportsTranscriptSystemMessages() && !isOmp
     ? buildTranscriptAgentContext(systemPrompt, tools)
     : buildLegacyAgentContext(systemPrompt, tools);
 }
