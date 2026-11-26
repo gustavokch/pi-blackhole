@@ -1,4 +1,4 @@
-import { defineConfig } from "tsup";
+import { defineConfig, type Options } from "tsup";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -40,26 +40,46 @@ function inlineChangelog() {
   };
 }
 
-export default defineConfig({
-  entry: ["index.ts"],
+const hostPackages = [
+  "@earendil-works/pi-coding-agent",
+  "@earendil-works/pi-agent-core",
+  "@earendil-works/pi-ai",
+  "@earendil-works/pi-ai/compat",
+  "typebox",
+  "@sinclair/typebox",
+];
+
+const shared: Options = {
   format: ["esm"],
   outDir: "dist",
   bundle: true,
   splitting: false,
   dts: false,
-  clean: true,
   treeshake: true,
   sourcemap: false,
   minify: true,
   target: "es2022",
   esbuildPlugins: [inlineChangelog()],
-  external: [
-    "@earendil-works/pi-coding-agent",
-    "@earendil-works/pi-agent-core",
-    "@earendil-works/pi-ai",
-    "@earendil-works/pi-ai/compat",
-    "@earendil-works/pi-tui",
-    "typebox",
-    "@sinclair/typebox",
-  ],
-});
+};
+
+/**
+ * Two bundles from one source. pi loads `index.js` (`pi.extensions`) and
+ * shares the host's pi-tui. omp 19.2+ refuses to load an extension that
+ * imports pi-tui, so `omp.js` (`omp.extensions`) carries its own copy. tsup
+ * runs both builds at once, so each clean spares the other's output.
+ */
+export default defineConfig([
+  {
+    ...shared,
+    entry: { index: "index.ts" },
+    clean: ["!omp.js"],
+    external: [...hostPackages, "@earendil-works/pi-tui"],
+  },
+  {
+    ...shared,
+    entry: { omp: "index.ts" },
+    clean: ["!index.js"],
+    external: hostPackages,
+    noExternal: ["@earendil-works/pi-tui"],
+  },
+]);

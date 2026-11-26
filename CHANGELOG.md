@@ -8,6 +8,8 @@
 
 - **Observational memory works on omp.** omp's pi-ai shim exports `createInitialSystemMessage`, so the observer, reflector and dropper sent their system prompt as a leading `system` message and passed their tool schemas through the host's `toToolDeclaration`. omp's typebox replacement builds callable schemas that serialize to `undefined`, so every worker run failed with `JSON Parse error: Unexpected identifier "undefined"`, and omp's agent loop has no `system` message role. Workers now use the `systemPrompt` carrier when their tool schemas are callable.
 
+- **The extension loads on omp 19.2 again.** omp 19.2 refuses any extension that imports `@earendil-works/pi-tui` and dropped `getMarkdownTheme` and `getSelectListTheme` from its coding-agent shim, so blackhole failed to load with `imports "@earendil-works/pi-tui", which omp no longer provides`. The build now also writes `dist/omp.js`, which carries its own pi-tui and is named in `package.json#omp.extensions`; pi still loads `dist/index.js` against its own pi-tui. The settings modal and changelog viewer read their height from omp's UI host (`size()`) when the host passes no TUI, and select lists take their colors from the host theme.
+
 ---
 
 ## [0.5.19] - 2026-11-21

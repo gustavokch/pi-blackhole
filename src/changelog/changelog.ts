@@ -19,6 +19,7 @@ import {
   responsiveInnerRows,
   wrapLine,
 } from "../pi-base/settings/frame.ts";
+import { hostTui, type UiHost } from "../pi-base/settings/host.ts";
 
 // ── Types ────────────────────────────────────────────────────────────────
 
@@ -307,7 +308,7 @@ export function renderChangelogEntries(
 const PREFERRED_INNER_ROWS = 45;
 
 export interface ChangelogViewerArgs {
-  tui: TUI;
+  tui: TUI | UiHost;
   theme: Theme;
   done: (result: void) => void;
   packageRoot?: string;
@@ -315,7 +316,8 @@ export interface ChangelogViewerArgs {
 }
 
 export function createChangelogViewer(args: ChangelogViewerArgs): Component {
-  const { tui, theme, done, packageRoot, maxEntries } = args;
+  const { theme, done, packageRoot, maxEntries } = args;
+  const tui = hostTui(args.tui);
 
   const version = getPackageVersion(packageRoot);
   const title = version ? `pi-blackhole v${version} — Changelog` : "pi-blackhole — Changelog";

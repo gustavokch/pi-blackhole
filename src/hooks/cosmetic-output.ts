@@ -12,11 +12,11 @@
  *  - Bounded: a fixed cap keeps the added disk/redraw cost per compaction small.
  */
 import { Container, Markdown, Text, stripTerminalSequences } from "@earendil-works/pi-tui";
-import {
-  getMarkdownTheme,
-  type ExtensionAPI,
-  type SessionEntry,
-} from "@earendil-works/pi-coding-agent";
+// Read getMarkdownTheme off the namespace: omp's coding-agent shim does not
+// export it, and a missing named export fails the whole bundle at link time.
+// Entry renderers exist only on pi, which exports it.
+import * as codingAgent from "@earendil-works/pi-coding-agent";
+import type { ExtensionAPI, SessionEntry } from "@earendil-works/pi-coding-agent";
 import { debugLog } from "../om/debug-log.js";
 import type { Runtime } from "../om/runtime.js";
 
@@ -188,7 +188,9 @@ export function registerPreCompactionOutput(pi: ExtensionAPI, runtime: Runtime):
       container.addChild(new Text(theme.fg("dim", "[Previous output — display only]"), 0, 0));
       // Copied text is data, never terminal control: strip escape sequences
       // before the Markdown component can pass them to the terminal.
-      container.addChild(new Markdown(stripTerminalSequences(data.text), 0, 0, getMarkdownTheme()));
+      container.addChild(
+        new Markdown(stripTerminalSequences(data.text), 0, 0, codingAgent.getMarkdownTheme()),
+      );
       if (data.truncated) {
         container.addChild(new Text(theme.fg("dim", "[Copy truncated]"), 0, 0));
       }

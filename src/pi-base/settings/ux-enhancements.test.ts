@@ -1,5 +1,4 @@
-import { describe, expect, it, vi, beforeAll } from "vitest";
-import { initTheme } from "@earendil-works/pi-coding-agent";
+import { describe, expect, it, vi } from "vitest";
 import { numberRenderer, stringRenderer } from "./fields/string";
 import { enumRenderer } from "./fields/enum";
 import { modelRenderer } from "./fields/model";
@@ -39,9 +38,6 @@ const mockContext: FieldRenderContext = {
 };
 
 describe("UX Enhancements - Submenus and Hints", () => {
-  beforeAll(() => {
-    initTheme();
-  });
   it("makeNumberValuesSubmenu supports 1-9 keypad selection", () => {
     const field: NumberField = {
       key: "ports",

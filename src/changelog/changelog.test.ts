@@ -4,6 +4,7 @@ import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import type { TUI } from "@earendil-works/pi-tui";
 import type { Theme } from "@earendil-works/pi-coding-agent";
+import type { UiHost } from "../pi-base/settings/host.ts";
 import {
   getOwnPackageRoot,
   getPackageVersion,
@@ -257,6 +258,31 @@ describe("changelog — viewer component", () => {
       });
       const out = comp.render(60).join("\n");
       expect(out).toContain("Changelog not found");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("sizes the viewer from omp's UI host size() like pi's terminal rows", () => {
+    const dir = mkdtempSync(join(tmpdir(), "changelog-omp-host-"));
+    try {
+      writeFileSync(
+        join(dir, "package.json"),
+        JSON.stringify({ name: "pi-blackhole", version: "0.0.3" }),
+      );
+      mkdirSync(join(dir, "docs"), { recursive: true });
+      let md = "";
+      for (let i = 0; i < 30; i++)
+        md += `## [0.0.${i}] - 2026-01-01\n\n### Added\n\n- item ${i}\n\n`;
+      writeFileSync(join(dir, "docs", "CHANGELOG.md"), md);
+      const height = (tui: TUI | UiHost) =>
+        createChangelogViewer({ tui, theme: fakeTheme(), done: () => {}, packageRoot: dir }).render(
+          60,
+        ).length;
+      const ompHost: UiHost = { requestRender: vi.fn(), size: () => ({ columns: 60, rows: 60 }) };
+
+      expect(height(ompHost)).toBe(height(fakeTui(60)));
+      expect(height(ompHost)).toBeGreaterThan(height(fakeTui(20)));
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

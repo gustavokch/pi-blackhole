@@ -49,6 +49,7 @@ import {
 } from "./frame";
 import { deleteWordBackward, type InlineEditState } from "./inline-edit";
 import { notifyError, extractInitialValue } from "./helpers.ts";
+import { hostTui, type UiHost } from "./host.ts";
 import {
   totalVisibleItems,
   updateVisibleIndices,
@@ -115,14 +116,15 @@ export interface BodyState {
  */
 export function createSettingsModalBody<F extends Field>(
   options: SettingsModalOptions<F>,
-  args: {
-    tui: TUI;
+  hostArgs: {
+    tui: TUI | UiHost;
     theme: Theme;
     ctx: ExtensionContext;
     /** Called when the user closes (Esc / ctrl+c / outer dismissal). */
     close: () => void;
   },
 ): SettingsModalBodyComponent {
+  const args = { ...hostArgs, tui: hostTui(hostArgs.tui) };
   const tabs: Tab[] = options.tabs ?? [];
   const fields: Field[] = options.fields as Field[];
   const mode = options.mode ?? "immediate";

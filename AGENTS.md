@@ -9,7 +9,7 @@ pnpm test          # vitest run (all tests, ~89 files, no network)
 pnpm typecheck     # tsc --noEmit (src/**/*.ts + index.ts only)
 pnpm lint          # oxlint .
 pnpm format:check  # oxfmt --check .
-pnpm build         # tsup bundle → dist/ (gitignored; pi loads dist/index.js)
+pnpm build         # tsup bundles → dist/ (gitignored; pi loads dist/index.js, omp loads dist/omp.js)
 pnpm check         # typecheck + lint
 ```
 
@@ -29,7 +29,7 @@ pnpm check         # typecheck + lint
 
 ## Architecture
 
-- `index.ts` is the real factory; `pi.extensions` points at the built `dist/index.js` (gitignored). Git installs build the bundle during `postinstall` because `tsup` is a production dependency; published tarballs already contain the bundle and skip rebuilding. The factory installs the host inline-compaction adapter, captures provider streams, registers consolidation + compaction triggers, `session_before_compact` + `session_compact_failed` + `context` hooks, commands, and the unified `recall` tool.
+- `index.ts` is the real factory; `pi.extensions` points at the built `dist/index.js` (gitignored), which imports the host's pi-tui. `omp.extensions` points at `dist/omp.js`, the same factory with pi-tui bundled in, because omp 19.2+ refuses extensions that import pi-tui. On omp, `ctx.ui.custom` factories receive a UI host (`requestRender`, `size`) instead of a TUI; `src/pi-base/settings/host.ts` adapts it. Git installs build the bundles during `postinstall` because `tsup` is a production dependency; published tarballs already contain them and skip rebuilding. The factory installs the host inline-compaction adapter, captures provider streams, registers consolidation + compaction triggers, `session_before_compact` + `session_compact_failed` + `context` hooks, commands, and the unified `recall` tool.
 - `src/core/` — unified config (`unified-config.ts` = defaults + resolution; env overrides declared in `config-env.ts` as `PI_BLACKHOLE_*`). configManager is the true source and entry point - users edit in UI.
 - `src/extract/` — vcc compaction section extraction (goals, files, commits, preferences, brief).
 - `src/om/` — observational memory: `agents/` (observer → reflector → dropper agent loops), `ledger/`, `runtime.ts`, `consolidation.ts`, `compaction-trigger.ts`, `cooldown.ts` (persisted fallback cooldowns), `pending.ts` (manual-mode disk buffers), `inline-compaction.ts`.

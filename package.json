@@ -84,6 +84,11 @@
     ]
   },
   "packageManager": "pnpm@12.10.0",
+  "omp": {
+    "extensions": [
+      "./dist/omp.js"
+    ]
+  },
   "pi": {
     "extensions": [
       "./dist/index.js"

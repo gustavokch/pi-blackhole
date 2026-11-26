@@ -12,17 +12,9 @@
  * touches; nothing in this file imports the real Pi runtime.
  */
 
-import { describe, expect, it, vi, beforeAll } from "vitest";
-import { initTheme } from "@earendil-works/pi-coding-agent";
+import { describe, expect, it, vi } from "vitest";
 import type { ExtensionContext, Theme } from "@earendil-works/pi-coding-agent";
 import type { TUI } from "@earendil-works/pi-tui";
-
-// SelectList renders via getSelectListTheme(), which requires the host
-// theme to be initialized. We call this once globally so submenu render
-// paths don't blow up in isolation.
-beforeAll(() => {
-  initTheme();
-});
 import { createSettingsModal } from "./modal.ts";
 import { createSettingsModalBody } from "./body.ts";
 import type { Field, SettingsModalOptions } from "./types.ts";

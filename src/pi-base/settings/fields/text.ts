@@ -9,7 +9,7 @@
  */
 
 import { Editor, type Component, matchesKey } from "@earendil-works/pi-tui";
-import { getSelectListTheme } from "@earendil-works/pi-coding-agent";
+import { selectListTheme } from "../host.ts";
 import type { EditorTheme } from "@earendil-works/pi-tui";
 import { truncateToWidth } from "@earendil-works/pi-tui";
 import type {
@@ -60,7 +60,7 @@ function makeTextSubmenu(current: string, ctx: FieldRenderContext): SubmenuFacto
       ctx.tui,
       {
         borderColor: (s: string) => ctx.theme.fg("muted", s),
-        selectList: getSelectListTheme(),
+        selectList: selectListTheme(ctx.theme),
       } as EditorTheme,
       {
         paddingX: 0,
